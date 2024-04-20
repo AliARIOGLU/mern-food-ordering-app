@@ -6,10 +6,12 @@ import { SearchResultInfo } from "@/components/searchresult-info";
 import { useSearchRestaurants } from "@/lib/api/restaurant-api";
 import { SearchForm, Searchbar } from "@/components/searchbar";
 import { PaginationSelector } from "@/components/pagination-selector";
+import { CuisineFilter } from "@/components/cuisine-filter";
 
 export type SearchState = {
   searchQuery: string;
   page: number;
+  selectedCuisines: string[];
 };
 
 const SearchPage = () => {
@@ -17,7 +19,10 @@ const SearchPage = () => {
   const [searchState, setSearchState] = useState<SearchState>({
     searchQuery: "",
     page: 1,
+    selectedCuisines: [],
   });
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const { searchResults, isLoading } = useSearchRestaurants(searchState, city);
 
   if (isLoading) {
@@ -27,6 +32,14 @@ const SearchPage = () => {
   if (!searchResults?.data || !city) {
     return <span>No results for {city}</span>;
   }
+
+  const setSelectedCuisines = (selectedCuisines: string[]) => {
+    setSearchState((prevState) => ({
+      ...prevState,
+      selectedCuisines,
+      page: 1,
+    }));
+  };
 
   const setPage = (page: number) => {
     setSearchState((prevState) => ({
@@ -53,7 +66,16 @@ const SearchPage = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
-      <div id="cuisines-list">cuisiniesss here!!</div>
+      <div id="cuisines-list">
+        <CuisineFilter
+          onChange={setSelectedCuisines}
+          selectedCuisines={searchState.selectedCuisines}
+          isExpanded={isExpanded}
+          onExpandedClick={() =>
+            setIsExpanded((prevIsExpanded) => !prevIsExpanded)
+          }
+        />
+      </div>
       <div id="main-content" className="flex flex-col gap-5">
         <Searchbar
           searchQuery={searchState.searchQuery}

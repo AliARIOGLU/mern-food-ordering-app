@@ -12,6 +12,10 @@ export const useSearchRestaurants = (
     const searchParams = new URLSearchParams();
     searchParams.set("searchQuery", searchState.searchQuery);
     searchParams.set("page", searchState.page.toString());
+    searchParams.set(
+      "selectedCuisines",
+      searchState.selectedCuisines.join(",")
+    );
 
     const response = await appAxios.get(
       `/api/restaurant/search/${city}?${searchParams.toString()}`
