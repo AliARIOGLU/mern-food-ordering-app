@@ -2,10 +2,19 @@ import { useQuery } from "react-query";
 
 import { appAxios } from "../app-axios";
 import { RestaurantSearchResponse } from "@/types";
+import { SearchState } from "@/pages/search-page";
 
-export const useSearchRestaurants = (city?: string) => {
+export const useSearchRestaurants = (
+  searchState: SearchState,
+  city?: string
+) => {
   const createSearchRequest = async (): Promise<RestaurantSearchResponse> => {
-    const response = await appAxios.get(`/api/restaurant/search/${city}`);
+    const searchParams = new URLSearchParams();
+    searchParams.set("searchQuery", searchState.searchQuery);
+
+    const response = await appAxios.get(
+      `/api/restaurant/search/${city}?${searchParams.toString()}`
+    );
 
     if (!response.data) {
       throw new Error("Failed to search for restaurants");
@@ -15,7 +24,7 @@ export const useSearchRestaurants = (city?: string) => {
   };
 
   const { data: searchResults, isLoading } = useQuery(
-    ["searchRestaurants"],
+    ["searchRestaurants", searchState],
     createSearchRequest,
     {
       enabled: !!city,

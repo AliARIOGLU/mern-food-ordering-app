@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   searchQuery: z.string({
@@ -20,17 +21,19 @@ type SearchbarProps = {
   onSubmit: (formData: SearchForm) => void;
   placeholder: string;
   onReset?: () => void;
+  searchQuery: string;
 };
 
 export const Searchbar = ({
   placeholder,
   onSubmit,
   onReset,
+  searchQuery,
 }: SearchbarProps) => {
   const form = useForm<SearchForm>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      searchQuery: "",
+      searchQuery,
     },
   });
 
@@ -42,12 +45,16 @@ export const Searchbar = ({
     if (onReset) onReset();
   };
 
+  useEffect(() => {
+    form.reset({ searchQuery });
+  }, [form, searchQuery]);
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
-          "flex items-center flex-1 gap-3 justify-between flex-row border-2 rounded-full p-3 mx-5",
+          "flex items-center flex-1 gap-3 justify-between flex-row border-2 rounded-full p-3",
           {
             "border-rose-500": form.formState.errors.searchQuery,
           }
