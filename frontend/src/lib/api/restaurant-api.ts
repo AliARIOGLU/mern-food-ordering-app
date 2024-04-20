@@ -11,6 +11,7 @@ export const useSearchRestaurants = (
   const createSearchRequest = async (): Promise<RestaurantSearchResponse> => {
     const searchParams = new URLSearchParams();
     searchParams.set("searchQuery", searchState.searchQuery);
+    searchParams.set("page", searchState.page.toString());
 
     const response = await appAxios.get(
       `/api/restaurant/search/${city}?${searchParams.toString()}`
