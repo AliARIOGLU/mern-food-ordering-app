@@ -3,7 +3,7 @@ import {
   useCreateRestaurant,
   useGetRestaurant,
   useUpdateRestaurant,
-} from "@/lib/api/restaurant-api";
+} from "@/lib/api/my-restaurant-api";
 
 const ManageRestaurantPage = () => {
   const { restaurant } = useGetRestaurant();
