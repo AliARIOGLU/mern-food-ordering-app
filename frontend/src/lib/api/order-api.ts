@@ -26,7 +26,12 @@ export const useGetMyOrders = () => {
 
   const { data: orders, isLoading } = useQuery(
     "fetchMyOrders",
-    getMyOrdersRequest
+    getMyOrdersRequest,
+    {
+      // order status pooling -> yapılan her status değişikliğini takip eder ve 5sn aralıklarla tekrar cagırılır böylece dinamik bir sonuç
+      // görürsün order status sayfasında.
+      refetchInterval: 5000,
+    }
   );
 
   return { orders, isLoading };
