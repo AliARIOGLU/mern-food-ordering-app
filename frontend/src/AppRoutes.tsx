@@ -8,6 +8,7 @@ import ProtectedRoute from "./auth/protected-route";
 import ManageRestaurantPage from "./pages/manage-restaurant-page";
 import SearchPage from "./pages/search-page";
 import RestaurantDetailPage from "./pages/restaurant-detail-page";
+import OrderStatusPage from "./pages/order-status-page";
 
 const AppRoutes = () => {
   return (
@@ -38,6 +39,14 @@ const AppRoutes = () => {
         }
       />
       <Route element={<ProtectedRoute />}>
+        <Route
+          path="/order-status"
+          element={
+            <Layout>
+              <OrderStatusPage />
+            </Layout>
+          }
+        />
         <Route
           path="/user-profile"
           element={
