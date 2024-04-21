@@ -1,13 +1,13 @@
 import { z } from "zod";
+import { useEffect } from "react";
+import { Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
-import { useEffect } from "react";
 
 const formSchema = z.object({
   searchQuery: z.string({
@@ -21,7 +21,7 @@ type SearchbarProps = {
   onSubmit: (formData: SearchForm) => void;
   placeholder: string;
   onReset?: () => void;
-  searchQuery: string;
+  searchQuery?: string;
 };
 
 export const Searchbar = ({

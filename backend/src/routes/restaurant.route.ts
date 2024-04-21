@@ -1,9 +1,18 @@
 import express from "express";
 
 import restaurantController from "../controllers/restaurant-controller";
-import { validateRestaurantCityParameter } from "../middleware/validation";
+import {
+  validateRestaurantCityParameter,
+  validateRestaurantIdParameter,
+} from "../middleware/validation";
 
 const router = express.Router();
+
+router.get(
+  "/:restaurantId",
+  validateRestaurantIdParameter,
+  restaurantController.getRestaurant
+);
 
 router.get(
   "/search/:city",

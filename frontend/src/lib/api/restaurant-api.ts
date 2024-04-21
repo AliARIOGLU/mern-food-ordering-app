@@ -1,8 +1,30 @@
 import { useQuery } from "react-query";
 
 import { appAxios } from "../app-axios";
-import { RestaurantSearchResponse } from "@/types";
+import { Restaurant, RestaurantSearchResponse } from "@/types";
 import { SearchState } from "@/pages/search-page";
+
+export const useGetRestaurantDetail = (restaurantId?: string) => {
+  const getRestaurantDetailRequest = async (): Promise<Restaurant> => {
+    const response = await appAxios.get(`/api/restaurant/${restaurantId}`);
+
+    if (!response.data) {
+      throw new Error("Failed to get restaurant detail");
+    }
+
+    return response.data;
+  };
+
+  const { data: restaurantDetail, isLoading } = useQuery(
+    ["getRestaurantDetail"],
+    getRestaurantDetailRequest,
+    {
+      enabled: !!restaurantId,
+    }
+  );
+
+  return { restaurantDetail, isLoading };
+};
 
 export const useSearchRestaurants = (
   searchState: SearchState,
