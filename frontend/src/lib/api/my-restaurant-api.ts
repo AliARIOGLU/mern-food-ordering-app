@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "react-query";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { appAxios } from "../app-axios";
-import { Restaurant } from "@/types";
+import { Restaurant, Order } from "@/types";
 
 export const useGetRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -121,4 +121,31 @@ export const useUpdateRestaurant = () => {
     updateRestaurant,
     isLoading,
   };
+};
+
+export const useGetMyRestaurantOrders = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const getMyRestaurantOrdersRequest = async (): Promise<Order[]> => {
+    const accessToken = await getAccessTokenSilently();
+
+    const response = await appAxios.get("/api/my/restaurant/order", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to get my restaurant orders");
+    }
+
+    return response.data;
+  };
+
+  const { data: myRestaurantOrders, isLoading } = useQuery(
+    "fetchMyRestaurantOrders",
+    getMyRestaurantOrdersRequest
+  );
+
+  return { myRestaurantOrders, isLoading };
 };

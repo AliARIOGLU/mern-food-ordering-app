@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
-import cloudinary from "cloudinary";
 import { Request, Response } from "express";
 
+// models
 import { Restaurant } from "../models/restaurant.model";
+import { Order } from "../models/order.model";
+
+// helpers
 import { uploadImage } from "../utils";
 
 const getMyRestaurant = async (req: Request, res: Response) => {
@@ -72,4 +75,29 @@ const updateMyRestaurant = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Soemthing went wrong" });
   }
 };
-export default { createMyRestaurant, getMyRestaurant, updateMyRestaurant };
+
+const getMyRestaurantOrders = async (req: Request, res: Response) => {
+  try {
+    const restaurant = await Restaurant.findOne({ user: req.userId });
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    const orders = await Order.find({ restaurant: restaurant._id })
+      .populate("user")
+      .populate("restaurant");
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export default {
+  createMyRestaurant,
+  getMyRestaurant,
+  updateMyRestaurant,
+  getMyRestaurantOrders,
+};
