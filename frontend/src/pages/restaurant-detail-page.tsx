@@ -11,16 +11,19 @@ import { OrderSummary } from "@/components/order-summary";
 import { MenuItem as MenuItemType } from "@/types";
 import { CheckoutButton } from "@/components/checkout-button";
 import { UserFormData } from "@/forms/user-profile-form";
+import { useCreateCheckoutSession } from "@/lib/api/order-api";
 
 const RestaurantDetailPage = () => {
   const { restaurantId } = useParams();
   const { restaurantDetail, isLoading } = useGetRestaurantDetail(restaurantId);
+  const { createCheckoutSession, isLoading: isCreateCheckoutSessionLoading } =
+    useCreateCheckoutSession();
 
   const [cartItems, setCartItems] = useState<CartItem[]>(
     JSON.parse(sessionStorage.getItem(`cartItems-${restaurantId}`)!) ?? []
   );
 
-  if (isLoading || !restaurantDetail) {
+  if (isLoading) {
     return "Loading...";
   }
 
@@ -77,48 +80,74 @@ const RestaurantDetailPage = () => {
     });
   };
 
-  const onCheckout = (userFormData: UserFormData) => {
-    console.log("userFormData", userFormData);
+  const onCheckout = async (userFormData: UserFormData) => {
+    if (!restaurantDetail) {
+      return;
+    }
+
+    const checkoutData = {
+      cartItems: cartItems.map((cartItem) => ({
+        menuItemId: cartItem._id,
+        name: cartItem.name,
+        quantity: cartItem.quantity.toString(),
+      })),
+      restaurantId: restaurantDetail._id,
+      deliveryDetails: {
+        name: userFormData.name,
+        addressLine1: userFormData.addressLine1,
+        city: userFormData.city,
+        country: userFormData.country,
+        email: userFormData.email as string,
+      },
+    };
+
+    const data = await createCheckoutSession(checkoutData);
+    window.location.href = data.url;
   };
 
   return (
-    <div className="flex flex-col gap-10">
-      <AspectRatio ratio={16 / 5}>
-        <img
-          src={restaurantDetail.imageUrl}
-          className="rounded-md w-full h-full object-cover"
-        />
-      </AspectRatio>
-      <div className="grid md:grid-cols-[4fr_2fr] gap-5 md:px-32">
-        <div className="flex flex-col gap-4">
-          <RestaurantInfo restaurant={restaurantDetail} />
-          <span className="text-2xl font-bold tracking-tight">Menu</span>
-          {restaurantDetail.menuItems.map((menuItem) => (
-            <MenuItem
-              key={menuItem._id}
-              menuItem={menuItem}
-              addToCart={() => addToCart(menuItem)}
+    <>
+      {restaurantDetail && (
+        <div className="flex flex-col gap-10">
+          <AspectRatio ratio={16 / 5}>
+            <img
+              src={restaurantDetail.imageUrl}
+              className="rounded-md w-full h-full object-cover"
             />
-          ))}
-        </div>
+          </AspectRatio>
+          <div className="grid md:grid-cols-[4fr_2fr] gap-5 md:px-32">
+            <div className="flex flex-col gap-4">
+              <RestaurantInfo restaurant={restaurantDetail} />
+              <span className="text-2xl font-bold tracking-tight">Menu</span>
+              {restaurantDetail.menuItems.map((menuItem) => (
+                <MenuItem
+                  key={menuItem._id}
+                  menuItem={menuItem}
+                  addToCart={() => addToCart(menuItem)}
+                />
+              ))}
+            </div>
 
-        <div>
-          <Card>
-            <OrderSummary
-              restaurant={restaurantDetail}
-              cartItems={cartItems}
-              removeFromCart={removeFromCart}
-            />
-            <CardFooter>
-              <CheckoutButton
-                onCheckout={onCheckout}
-                disabled={cartItems.length === 0}
-              />
-            </CardFooter>
-          </Card>
+            <div>
+              <Card>
+                <OrderSummary
+                  restaurant={restaurantDetail}
+                  cartItems={cartItems}
+                  removeFromCart={removeFromCart}
+                />
+                <CardFooter>
+                  <CheckoutButton
+                    onCheckout={onCheckout}
+                    disabled={cartItems.length === 0}
+                    isLoading={isCreateCheckoutSessionLoading}
+                  />
+                </CardFooter>
+              </Card>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
