@@ -84,9 +84,13 @@ const getMyRestaurantOrders = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Restaurant not found" });
     }
 
+    console.log("resta", restaurant);
+
     const orders = await Order.find({ restaurant: restaurant._id })
       .populate("user")
       .populate("restaurant");
+
+    console.log("order", orders);
 
     res.status(200).json(orders);
   } catch (error) {

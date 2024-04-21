@@ -25,3 +25,14 @@ export const getExpectedDelivery = (order: Order) => {
 export const getOrderStatusInfo = (order: Order) => {
   return ORDER_STATUS.find((o) => o.value === order.status) || ORDER_STATUS[0];
 };
+
+export const getOrderTime = (order: Order) => {
+  const orderDateTime = new Date(order.createdAt);
+
+  const hours = orderDateTime.getHours();
+  const minutes = orderDateTime.getMinutes();
+
+  const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  return `${hours}:${paddedMinutes}`;
+};
