@@ -8,9 +8,14 @@ import { CardContent, CardHeader, CardTitle } from "./ui/card";
 type OrderSummaryProps = {
   restaurant: Restaurant;
   cartItems: CartItem[];
+  removeFromCart: (cartItem: CartItem) => void;
 };
 
-export const OrderSummary = ({ restaurant, cartItems }: OrderSummaryProps) => {
+export const OrderSummary = ({
+  restaurant,
+  cartItems,
+  removeFromCart,
+}: OrderSummaryProps) => {
   const getTotalCost = () => {
     const totalInPence = cartItems.reduce(
       (total, cartItem) => total + cartItem.price * cartItem.quantity,
@@ -40,6 +45,12 @@ export const OrderSummary = ({ restaurant, cartItems }: OrderSummaryProps) => {
               {cartItem.name}
             </span>
             <span className="flex items-center gap-1">
+              <Trash
+                className="cursor-pointer"
+                color="red"
+                size={20}
+                onClick={() => removeFromCart(cartItem)}
+              />
               £{((cartItem.price * cartItem.quantity) / 100).toFixed(2)}
             </span>
           </div>

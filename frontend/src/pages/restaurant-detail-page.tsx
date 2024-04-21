@@ -54,6 +54,12 @@ const RestaurantDetailPage = () => {
     });
   };
 
+  const removeFromCart = (menuItem: MenuItemType) => {
+    setCartItems((prevItems) =>
+      prevItems.filter((item) => item._id !== menuItem._id)
+    );
+  };
+
   return (
     <div className="flex flex-col gap-10">
       <AspectRatio ratio={16 / 5}>
@@ -77,7 +83,11 @@ const RestaurantDetailPage = () => {
 
         <div>
           <Card>
-            <OrderSummary restaurant={restaurantDetail} cartItems={cartItems} />
+            <OrderSummary
+              restaurant={restaurantDetail}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
+            />
           </Card>
         </div>
       </div>
