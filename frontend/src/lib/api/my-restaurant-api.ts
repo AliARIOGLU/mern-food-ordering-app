@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "react-query";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { appAxios } from "../app-axios";
-import { Restaurant, Order } from "@/types";
+import { Restaurant, Order, UpdateStatusOrderRequest } from "@/types";
 
 export const useGetRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -148,4 +148,49 @@ export const useGetMyRestaurantOrders = () => {
   );
 
   return { myRestaurantOrders, isLoading };
+};
+
+export const useUpdateMyRestaurantOrder = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const updateMyRestaurantOrderRequest = async (
+    updateStatusOrder: UpdateStatusOrderRequest
+  ) => {
+    const accessToken = await getAccessTokenSilently();
+
+    const response = await appAxios.patch(
+      `/api/my/restaurant/order/${updateStatusOrder.orderId}/status`,
+      { status: updateStatusOrder.status },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (response.status !== 200) {
+      throw new Error("Failed to update my restaurant order");
+    }
+
+    return response.data;
+  };
+
+  const {
+    mutateAsync: updateRestaurantStatus,
+    isLoading,
+    isError,
+    isSuccess,
+    reset,
+  } = useMutation(updateMyRestaurantOrderRequest);
+
+  if (isSuccess) {
+    toast.success("Order status updated successfully");
+  }
+
+  if (isError) {
+    toast.error("Failed to update order status");
+    reset();
+  }
+
+  return { updateRestaurantStatus, isLoading };
 };
