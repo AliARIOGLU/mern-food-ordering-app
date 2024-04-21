@@ -31,12 +31,16 @@ type UserProfileFormProps = {
   currentUser: User;
   onSave: (userProfileData: UserFormData) => void;
   isLoading: boolean;
+  title?: string;
+  buttonText?: string;
 };
 
 export const UserProfileForm = ({
   currentUser,
   onSave,
   isLoading,
+  title = "User Profile",
+  buttonText = "Submit",
 }: UserProfileFormProps) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
@@ -54,7 +58,7 @@ export const UserProfileForm = ({
         className="space-y-4 bg-gray-50 rounded-lg p-4 md:p-10"
       >
         <div className="text-center md:text-left">
-          <h2 className="text-2xl font-bold">User Profile Form</h2>
+          <h2 className="text-2xl font-bold">{title}</h2>
           <FormDescription>
             View and change your profile information here
           </FormDescription>
@@ -134,7 +138,7 @@ export const UserProfileForm = ({
           <LoadingButton />
         ) : (
           <Button type="submit" className="bg-orange-500 w-full md:w-auto">
-            Submit
+            {buttonText}
           </Button>
         )}
       </form>
