@@ -1,4 +1,6 @@
-import { Order } from "@/types";
+import { useState, useEffect } from "react";
+
+import { Order, OrderStatus } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { getOrderTime } from "@/lib/utils";
 import { Separator } from "./ui/separator";
@@ -12,12 +14,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { useUpdateMyRestaurantOrder } from "@/lib/api/my-restaurant-api";
 
 type OrderItemCardProps = {
   order: Order;
 };
 
 export const OrderItemCard = ({ order }: OrderItemCardProps) => {
+  const { updateRestaurantStatus, isLoading } = useUpdateMyRestaurantOrder();
+  const [status, setStatus] = useState<OrderStatus>(order.status);
+
+  const handleStatusChange = async (newStatus: OrderStatus) => {
+    await updateRestaurantStatus({
+      orderId: order._id as string,
+      status: newStatus,
+    });
+    setStatus(newStatus);
+  };
+
+  useEffect(() => {
+    setStatus(order.status);
+  }, [order.status]);
+
   return (
     <Card>
       <CardHeader>
@@ -49,7 +67,7 @@ export const OrderItemCard = ({ order }: OrderItemCardProps) => {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
-        {/* <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           {order.cartItems.map((cartItem) => (
             <span>
               <Badge variant="outline" className="mr-2">
@@ -75,7 +93,7 @@ export const OrderItemCard = ({ order }: OrderItemCardProps) => {
               ))}
             </SelectContent>
           </Select>
-        </div> */}
+        </div>
       </CardContent>
     </Card>
   );
