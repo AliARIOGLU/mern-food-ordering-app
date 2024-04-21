@@ -1,8 +1,36 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { appAxios } from "../app-axios";
-import { useMutation } from "react-query";
 import { toast } from "sonner";
-import { CheckoutSessionRequest } from "@/types";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useMutation, useQuery } from "react-query";
+
+import { appAxios } from "../app-axios";
+import { CheckoutSessionRequest, Order } from "@/types";
+
+export const useGetMyOrders = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const getMyOrdersRequest = async (): Promise<Order[]> => {
+    const accessToken = await getAccessTokenSilently();
+
+    const response = await appAxios.get("/api/order", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to get my orders");
+    }
+
+    return response.data;
+  };
+
+  const { data: orders, isLoading } = useQuery(
+    "fetchMyOrders",
+    getMyOrdersRequest
+  );
+
+  return { orders, isLoading };
+};
 
 export const useCreateCheckoutSession = () => {
   const { getAccessTokenSilently } = useAuth0();
