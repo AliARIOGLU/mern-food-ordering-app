@@ -10,6 +10,7 @@ import { Card, CardFooter } from "@/components/ui/card";
 import { OrderSummary } from "@/components/order-summary";
 import { MenuItem as MenuItemType } from "@/types";
 import { CheckoutButton } from "@/components/checkout-button";
+import { UserFormData } from "@/forms/user-profile-form";
 
 const RestaurantDetailPage = () => {
   const { restaurantId } = useParams();
@@ -76,6 +77,10 @@ const RestaurantDetailPage = () => {
     });
   };
 
+  const onCheckout = (userFormData: UserFormData) => {
+    console.log("userFormData", userFormData);
+  };
+
   return (
     <div className="flex flex-col gap-10">
       <AspectRatio ratio={16 / 5}>
@@ -105,7 +110,10 @@ const RestaurantDetailPage = () => {
               removeFromCart={removeFromCart}
             />
             <CardFooter>
-              <CheckoutButton />
+              <CheckoutButton
+                onCheckout={onCheckout}
+                disabled={cartItems.length === 0}
+              />
             </CardFooter>
           </Card>
         </div>
