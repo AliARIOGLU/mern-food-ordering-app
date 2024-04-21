@@ -15,6 +15,18 @@ const STRIPE = new Stripe(process.env.STRIPE_API_KEY as string);
 const CLIENT_URL = process.env.CLIENT_URL as string;
 const STRIPE_ENDPOINT_SECRET = process.env.STRIPE_WEBHOOK_SECRET as string;
 
+const getMyOrders = async (req: Request, res: Response) => {
+  try {
+    const orders = await Order.find({ user: req.userId })
+      .populate("restaurant")
+      .populate("user");
+
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting orders" });
+  }
+};
+
 const createCheckoutSession = async (req: Request, res: Response) => {
   try {
     const checkoutSessionRequest: CheckoutSessionRequest = req.body;
@@ -123,4 +135,4 @@ const createSession = async (
   return sessionData;
 };
 
-export default { createCheckoutSession, stripeWebhookHandler };
+export default { createCheckoutSession, stripeWebhookHandler, getMyOrders };
