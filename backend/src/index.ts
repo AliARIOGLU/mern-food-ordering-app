@@ -21,8 +21,12 @@ cloudinary.config({
 });
 
 const app = express();
-app.use(express.json());
 app.use(cors());
+
+// middleware for stripe (validation and security reasons)
+app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
+
+app.use(express.json());
 
 // server düzgün şekilde kalktı mı diye yapılan sorgulama (convetion)
 app.get("/health", (req: Request, res: Response) => {
