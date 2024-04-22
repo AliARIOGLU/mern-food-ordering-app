@@ -3,10 +3,10 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/layout";
 import HomePage from "./pages/home-page";
 import AuthCallbackPage from "./pages/auth-callback-page";
+import SearchPage from "./pages/search-page";
 import UserProfilePage from "./pages/user-profile-page";
 import ProtectedRoute from "./auth/protected-route";
 import ManageRestaurantPage from "./pages/manage-restaurant-page";
-import SearchPage from "./pages/search-page";
 import RestaurantDetailPage from "./pages/restaurant-detail-page";
 import OrderStatusPage from "./pages/order-status-page";
 
