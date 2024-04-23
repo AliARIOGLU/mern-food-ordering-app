@@ -1,3 +1,4 @@
+import { LoadingScreen } from "@/components/loading-screen";
 import { UserProfileForm } from "@/forms/user-profile-form";
 import { useGetUser, useUpdateUserProfile } from "@/lib/api/user-api";
 
@@ -6,7 +7,7 @@ const UserProfilePage = () => {
   const { currentUser, isLoading: isGetLoading } = useGetUser();
 
   if (isGetLoading) {
-    return <span>Loading..</span>;
+    return <LoadingScreen isLoading={isGetLoading} />;
   }
 
   if (!currentUser) {

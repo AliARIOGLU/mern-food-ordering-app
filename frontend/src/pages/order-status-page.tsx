@@ -1,3 +1,4 @@
+import { LoadingScreen } from "@/components/loading-screen";
 import { OrderStatusDetail } from "@/components/order-status-detail";
 import { OrderStatusHeader } from "@/components/order-status-header";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -7,7 +8,7 @@ const OrderStatusPage = () => {
   const { orders, isLoading } = useGetMyOrders();
 
   if (isLoading) {
-    return "Loading...";
+    return <LoadingScreen isLoading />;
   }
 
   if (!orders || orders.length === 0) {
