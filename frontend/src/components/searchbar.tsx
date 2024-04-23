@@ -33,7 +33,7 @@ export const Searchbar = ({
   const form = useForm<SearchForm>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      searchQuery,
+      searchQuery: searchQuery || "",
     },
   });
 

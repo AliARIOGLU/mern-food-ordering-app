@@ -65,8 +65,13 @@ export const ManageRestaurantForm = ({
   const form = useForm<RestaurantFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      cuisines: [],
-      menuItems: [{ name: "", price: 0 }],
+      restaurantName: restaurant?.restaurantName || "",
+      city: restaurant?.city || "",
+      country: restaurant?.country || "",
+      deliveryPrice: restaurant?.deliveryPrice || 0,
+      estimatedDeliveryTime: restaurant?.estimatedDeliveryTime || 0,
+      cuisines: restaurant?.cuisines || [],
+      menuItems: restaurant?.menuItems || [{ name: "", price: 0 }],
     },
   });
 

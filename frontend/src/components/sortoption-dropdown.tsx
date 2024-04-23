@@ -22,7 +22,7 @@ export const SortOptionDropdown = ({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="cursor-pointer">
+      <DropdownMenuTrigger className="cursor-pointer" asChild>
         <Button variant="outline" className="w-full">
           Sort by: {selectedSortLabel}
         </Button>
