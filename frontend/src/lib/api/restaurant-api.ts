@@ -51,13 +51,14 @@ export const useSearchRestaurants = (
     return response.data;
   };
 
-  const { data: searchResults, isLoading } = useQuery(
-    ["searchRestaurants", searchState],
-    createSearchRequest,
-    {
-      enabled: !!city,
-    }
-  );
+  const {
+    data: searchResults,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useQuery(["searchRestaurants", searchState], createSearchRequest, {
+    enabled: !!city,
+  });
 
-  return { searchResults, isLoading };
+  return { searchResults, isLoading, isSuccess, isError };
 };

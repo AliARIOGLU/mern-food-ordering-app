@@ -8,6 +8,7 @@ import { SearchForm, Searchbar } from "@/components/searchbar";
 import { PaginationSelector } from "@/components/pagination-selector";
 import { CuisineFilter } from "@/components/cuisine-filter";
 import { SortOptionDropdown } from "@/components/sortoption-dropdown";
+import { LoadingScreen } from "@/components/loading-screen";
 
 export type SearchState = {
   searchQuery: string;
@@ -26,14 +27,15 @@ const SearchPage = () => {
   });
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { searchResults, isLoading } = useSearchRestaurants(searchState, city);
+  const { searchResults, isLoading, isError } = useSearchRestaurants(
+    searchState,
+    city
+  );
 
-  if (isLoading) {
-    return <span>Loading...</span>;
-  }
+  const noResult = searchResults?.data.length === 0;
 
-  if (!searchResults?.data || !city) {
-    return <span>No results for {city}</span>;
+  if (isError && !isLoading && !city) {
+    return <span>Something went wrong!</span>;
   }
 
   const setSortOption = (sortOption: string) => {
@@ -94,24 +96,39 @@ const SearchPage = () => {
           placeholder="Search by Cuisine or Restaurant Name"
           onReset={resetSearch}
         />
-        <div className="flex flex-col justify-between lg:flex-row gap-3">
-          <SearchResultInfo
-            total={searchResults.pagination.total}
-            city={city}
-          />
-          <SortOptionDropdown
-            sortOption={searchState.sortOption}
-            onChange={(value) => setSortOption(value)}
-          />
-        </div>
-        {searchResults.data.map((restaurant) => (
-          <SearchResultCard key={restaurant._id} restaurant={restaurant} />
-        ))}
-        <PaginationSelector
-          page={searchResults.pagination.page}
-          pages={searchResults.pagination.pages}
-          onPageChange={setPage}
-        />
+        {isLoading ? (
+          <LoadingScreen isLoading />
+        ) : (
+          searchResults?.data &&
+          city && (
+            <>
+              <div className="flex flex-col justify-between lg:flex-row gap-3">
+                <SearchResultInfo
+                  total={searchResults.pagination.total}
+                  city={city}
+                  noResult={noResult}
+                />
+                <SortOptionDropdown
+                  sortOption={searchState.sortOption}
+                  onChange={(value) => setSortOption(value)}
+                />
+              </div>
+              {searchResults.data.map((restaurant) => (
+                <SearchResultCard
+                  key={restaurant._id}
+                  restaurant={restaurant}
+                />
+              ))}
+              {!noResult && (
+                <PaginationSelector
+                  page={searchResults.pagination.page}
+                  pages={searchResults.pagination.pages}
+                  onPageChange={setPage}
+                />
+              )}
+            </>
+          )
+        )}
       </div>
     </div>
   );
