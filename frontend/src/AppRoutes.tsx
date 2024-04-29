@@ -9,63 +9,29 @@ import ProtectedRoute from "./auth/protected-route";
 import ManageRestaurantPage from "./pages/manage-restaurant-page";
 import RestaurantDetailPage from "./pages/restaurant-detail-page";
 import OrderStatusPage from "./pages/order-status-page";
+import HomeLayout from "./layouts/home-layout";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <Layout showHeroImage>
-            <HomePage />
-          </Layout>
-        }
-      />
-      <Route path="/auth-callback" element={<AuthCallbackPage />} />
-      <Route
-        path="/search/:city"
-        element={
-          <Layout showHeroImage={false}>
-            <SearchPage />
-          </Layout>
-        }
-      />
-      <Route
-        path="/detail/:restaurantId"
-        element={
-          <Layout showHeroImage={false}>
-            <RestaurantDetailPage />
-          </Layout>
-        }
-      />
-      <Route element={<ProtectedRoute />}>
-        <Route
-          path="/order-status"
-          element={
-            <Layout>
-              <OrderStatusPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/user-profile"
-          element={
-            <Layout>
-              <UserProfilePage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/manage-restaurant"
-          element={
-            <Layout>
-              <ManageRestaurantPage />
-            </Layout>
-          }
-        />
+      <Route element={<HomeLayout />}>
+        <Route path="/" element={<HomePage />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route element={<Layout />}>
+        <Route path="/search/:city" element={<SearchPage />} />
+        <Route
+          path="/detail/:restaurantId"
+          element={<RestaurantDetailPage />}
+        />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/order-status" element={<OrderStatusPage />} />
+          <Route path="/user-profile" element={<UserProfilePage />} />
+          <Route path="/manage-restaurant" element={<ManageRestaurantPage />} />
+        </Route>
+      </Route>
+      <Route path="/auth-callback" element={<AuthCallbackPage />} />
+      <Route path="/*" element={<Navigate to="/" />} />
     </Routes>
   );
 };
