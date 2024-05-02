@@ -12,6 +12,7 @@ import { MenuItem as MenuItemType } from "@/types";
 import { CheckoutButton } from "@/components/checkout-button";
 import { UserFormData } from "@/forms/user-profile-form";
 import { useCreateCheckoutSession } from "@/lib/api/order-api";
+import { LoadingScreen } from "@/components/loading-screen";
 
 const RestaurantDetailPage = () => {
   const { restaurantId } = useParams();
@@ -24,7 +25,7 @@ const RestaurantDetailPage = () => {
   );
 
   if (isLoading) {
-    return "Loading...";
+    return <LoadingScreen isLoading />;
   }
 
   const addToCart = (menuItem: MenuItemType) => {
@@ -78,6 +79,26 @@ const RestaurantDetailPage = () => {
       );
       return updatedCartItems;
     });
+  };
+
+  const increaseQuantity = (id: string) => {
+    setCartItems(
+      cartItems.map((cartItem) =>
+        cartItem._id === id
+          ? { ...cartItem, quantity: cartItem.quantity + 1 }
+          : cartItem
+      )
+    );
+  };
+
+  const decreaseQuantity = (id: string) => {
+    setCartItems(
+      cartItems.map((cartItem) =>
+        cartItem._id === id
+          ? { ...cartItem, quantity: cartItem.quantity - 1 }
+          : cartItem
+      )
+    );
   };
 
   const onCheckout = async (userFormData: UserFormData) => {
@@ -134,6 +155,8 @@ const RestaurantDetailPage = () => {
                   restaurant={restaurantDetail}
                   cartItems={cartItems}
                   removeFromCart={removeFromCart}
+                  increaseQuantity={increaseQuantity}
+                  decreaseQuantity={decreaseQuantity}
                 />
                 <CardFooter>
                   <CheckoutButton

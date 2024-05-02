@@ -1,5 +1,6 @@
-import { Trash } from "lucide-react";
+import { Trash, MinusCircle, PlusCircle } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { CartItem, Restaurant } from "@/types";
@@ -9,12 +10,16 @@ type OrderSummaryProps = {
   restaurant: Restaurant;
   cartItems: CartItem[];
   removeFromCart: (cartItem: CartItem) => void;
+  increaseQuantity: (id: string) => void;
+  decreaseQuantity: (id: string) => void;
 };
 
 export const OrderSummary = ({
   restaurant,
   cartItems,
   removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
 }: OrderSummaryProps) => {
   const getTotalCost = () => {
     const totalInPence = cartItems.reduce(
@@ -44,6 +49,21 @@ export const OrderSummary = ({
               </Badge>
               {cartItem.name}
             </span>
+            <div className="flex gap-1">
+              <MinusCircle
+                onClick={() => {
+                  if (cartItem.quantity === 1) return;
+                  decreaseQuantity(cartItem._id);
+                }}
+                className={cn("text-orange-500 cursor-pointer", {
+                  "opacity-30 cursor-not-allowed": cartItem.quantity === 1,
+                })}
+              />
+              <PlusCircle
+                onClick={() => increaseQuantity(cartItem._id)}
+                className="text-orange-500 cursor-pointer"
+              />
+            </div>
             <span className="flex items-center gap-1">
               <Trash
                 className="cursor-pointer"
