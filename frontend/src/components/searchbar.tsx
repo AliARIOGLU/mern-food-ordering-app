@@ -91,7 +91,10 @@ export const Searchbar = ({
           </Button>
         )}
 
-        <Button type="submit" className="rounded-full bg-orange-500">
+        <Button
+          type="submit"
+          className="rounded-full bg-orange-500 hover:scale-110 duration-200 transition"
+        >
           Search
         </Button>
       </form>
